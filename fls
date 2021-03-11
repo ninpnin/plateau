@@ -1,0 +1,18 @@
+#! /usr/bin/python
+
+import sys
+import os
+
+directory = open(".current").read()
+print("Current directory:", directory)
+
+if directory in os.listdir(".dirs"):
+	files = open(".dirs/" + directory).readlines()
+	files = [file.strip() for file in files]
+	print(", ".join(files))
+else:
+	print("No files")
+	print("Available directories:")
+	dotdirs = ".dirs/"
+	directories = os.listdir(dotdirs)
+	print("\n".join(directories))

@@ -1,0 +1,29 @@
+#! /usr/bin/python
+
+import sys
+import os
+
+
+if len(sys.argv) > 2:
+	tag = sys.argv[-1]
+	taggable = sys.argv[1:-1]
+	taggable = [d.replace("/", "") for d in taggable]
+	cd = os.listdir(".")
+
+	if tag in os.listdir(".tags"):
+		f = open(".tags/" + tag)
+
+		for l in f:
+			if l not in taggable:
+				taggable.append(l.strip())
+		f.close()
+
+
+	taggable = list(set(taggable))
+	print("Current dirs in tag", taggable)
+
+	outf = open(".tags/" + tag, "w")
+	for d in taggable:
+		if d in cd:
+			outf.write(d + "\n")
+	outf.close()

@@ -1,0 +1,20 @@
+#! /usr/bin/python
+
+import sys
+import os
+
+if len(sys.argv) > 3:
+	directories = sys.argv[1:-1]
+	new_dir = sys.argv[-1]
+
+	dotdirs = ".dirs/"
+	current_dirs = os.listdir(dotdirs)
+
+	if new_dir in current_dirs:
+		print("Output directory '", new_dir, "' already exists")
+
+	else:
+		pass
+
+else:
+	print("Provide at least 2 dirs to merge and an output dir")
