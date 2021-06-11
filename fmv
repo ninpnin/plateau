@@ -4,29 +4,29 @@ import sys
 import os
 
 if len(sys.argv) == 3:
-	file = sys.argv[1]
-	directory = sys.argv[2]
+    file = sys.argv[1]
+    directory = sys.argv[2]
 
-	dotdirs = ".dirs/"
-	current_dirs = os.listdir(dotdirs)
+    dotdirs = ".dirs/"
+    current_dirs = os.listdir(dotdirs)
 
-	dirfiles = []
-	if directory in current_dirs:
-		f = open(dotdirs + directory)
-		for l in f:
-			dirfiles.append(l.strip())
+    dirfiles = []
+    if directory in current_dirs:
+        f = open(dotdirs + directory)
+        for l in f:
+            dirfiles.append(l.strip())
 
-		f.close()
+        f.close()
 
-	if file not in dirfiles:
-		dirfiles.append(file)
+    if file not in dirfiles:
+        dirfiles.append(file)
 
-	outfile = open(dotdirs + directory, "w")
+    outfile = open(dotdirs + directory, "w")
 
-	for f in dirfiles:
-		outfile.write(f + "\n")
+    for f in dirfiles:
+        outfile.write(f + "\n")
 
-	outfile.close()
+    outfile.close()
 
 else:
-	print("Provide 2 arguments")
+    print("Provide 2 arguments")

@@ -5,10 +5,10 @@ import os
 
 
 if len(sys.argv) > 1:
-	f = open(".current", "w")
-	f.write(sys.argv[1])
-	f.close()
+    f = open(".current", "w")
+    f.write(sys.argv[1])
+    f.close()
 else:
-	f = open(".current", "w")
-	f.write("root")
-	f.close()
+    f = open(".current", "w")
+    f.write("root")
+    f.close()
