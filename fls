@@ -3,13 +3,7 @@
 import sys
 import os
 
-dirs = open(".current").read().split()
-print("Current tags:")
-print(" ".join(dirs))
-
-available_dirs = sorted(os.listdir(".dirs"))
-if len(dirs) == 0:
-    print("Filesystem root")
+def print_available(available_dirs):
     print("Available tags:")
     if len(available_dirs) < 7:
         print("\n".join(available_dirs))
@@ -17,28 +11,43 @@ if len(dirs) == 0:
         print("\n".join(available_dirs[:5]))
         print("...")
         print("\n".join(available_dirs[-1:]))
-else:
-    all_found = True
-    for d in dirs:
-        if d not in available_dirs:
-            all_found = False
-    if all_found:
-        allfiles = {}
-        for ad in dirs:
-            afiles = open(".dirs/" + ad).read().split()
-            for f in afiles:
-                allfiles[f] = allfiles.get(f, 0) + 1
 
-        allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
-        allfiles = ["_".join(f.split("_")[1:]) for f in allfiles]
-        print("Files:")
-        print(" ".join(allfiles))
+def get_files(dirs, available_dirs):
+    if len(dirs) == 0:
+        print("Filesystem root")
+        return []
     else:
-        print("No files")
-        print("Available tags:")
-        if len(available_dirs) < 7:
-            print("\n".join(available_dirs))
+        all_found = True
+        for d in dirs:
+            if d not in available_dirs:
+                all_found = False
+        if all_found:
+            allfiles = {}
+            for ad in dirs:
+                afiles = open(".dirs/" + ad).read().split()
+                for f in afiles:
+                    allfiles[f] = allfiles.get(f, 0) + 1
+
+            allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
+            allfiles = ["_".join(f.split("_")[1:]) for f in allfiles]
+            return allfiles
         else:
-            print("\n".join(available_dirs[:5]))
-            print("...")
-            print("\n".join(available_dirs[1:]))
+            print("No files")
+            return []
+
+if __name__ == "__main__":
+    dirs = open(".current").read().split()
+    print("Current tags:")
+    print(" ".join(dirs))
+
+    available_dirs = sorted(os.listdir(".dirs"))
+
+    files = get_files(dirs, available_dirs)
+    if len(files) == 0:
+        print_available(available_dirs)
+    else:
+        print("Files:")
+        print(" ".join(files))
+
+
+
