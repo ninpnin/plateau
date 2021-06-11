@@ -3,16 +3,42 @@
 import sys
 import os
 
-directory = open(".current").read()
-print("Current directory:", directory)
+dirs = open(".current").read().split()
+print("Current tags:")
+print(" ".join(dirs))
 
-if directory in os.listdir(".dirs"):
-    files = open(".dirs/" + directory).readlines()
-    files = [file.strip() for file in files]
-    print(", ".join(files))
+available_dirs = sorted(os.listdir(".dirs"))
+if len(dirs) == 0:
+    print("Filesystem root")
+    print("Available tags:")
+    if len(available_dirs) < 7:
+        print("\n".join(available_dirs))
+    else:
+        print("\n".join(available_dirs[:5]))
+        print("...")
+        print("\n".join(available_dirs[-1:]))
 else:
-    print("No files")
-    print("Available directories:")
-    dotdirs = ".dirs/"
-    directories = os.listdir(dotdirs)
-    print("\n".join(directories))
+    all_found = True
+    for d in dirs:
+        if d not in available_dirs:
+            all_found = False
+    if all_found:
+        allfiles = {}
+        for ad in dirs:
+            afiles = open(".dirs/" + ad).read().split()
+            for f in afiles:
+                allfiles[f] = allfiles.get(f, 0) + 1
+
+        allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
+        allfiles = ["_".join(f.split("_")[1:]) for f in allfiles]
+        print("Files:")
+        print(" ".join(allfiles))
+    else:
+        print("No files")
+        print("Available tags:")
+        if len(available_dirs) < 7:
+            print("\n".join(available_dirs))
+        else:
+            print("\n".join(available_dirs[:5]))
+            print("...")
+            print("\n".join(available_dirs[1:]))
