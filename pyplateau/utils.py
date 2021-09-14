@@ -8,7 +8,6 @@ def get_available_dirs():
 
 def get_files(dirs, available_dirs):
     if len(dirs) == 0:
-        print("Filesystem root")
         return []
     else:
         all_found = True
@@ -25,5 +24,4 @@ def get_files(dirs, available_dirs):
             allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
             return allfiles
         else:
-            print("No files")
             return []
