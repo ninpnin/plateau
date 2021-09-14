@@ -1,14 +1,26 @@
-#! /usr/bin/python
+#! /usr/local/bin/python3
 
 import sys
 import os
+import argparse
 
-dirs = open(".current").read().split()
+def main(args):
+    if args.help:
+        print("This is a help message for 'fcd'.")
+    else:
+        dirs = open(".current").read().split()
 
-if len(sys.argv) > 1:
-    f = open(".current", "w")
-    f.write(" ".join(sys.argv[1:]))
-    f.close()
-else:
-    f = open(".current", "w")
-    f.close()
+        if len(args.tags) >= 1:
+            f = open(".current", "w")
+            f.write(" ".join(args.tags))
+            f.close()
+        else:
+            f = open(".current", "w")
+            f.close()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", action='store_true')
+    parser.add_argument("tags", type=str, nargs="*", default=[])
+    args = parser.parse_args()
+    main(args)

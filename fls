@@ -2,52 +2,52 @@
 
 import sys
 import os
+import argparse
+from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
 
-def print_available(available_dirs):
+def print_available(available_dirs, args):
     print("Available tags:")
-    if len(available_dirs) < 7:
-        print("\n".join(available_dirs))
+    if len(available_dirs) < 7 or args.all:
+        print(" ".join(available_dirs))
     else:
         print("\n".join(available_dirs[:5]))
         print("...")
         print("\n".join(available_dirs[-1:]))
 
-def get_files(dirs, available_dirs):
-    if len(dirs) == 0:
-        print("Filesystem root")
-        return []
-    else:
-        all_found = True
-        for d in dirs:
-            if d not in available_dirs:
-                all_found = False
-        if all_found:
-            allfiles = {}
-            for ad in dirs:
-                afiles = open(".dirs/" + ad).read().split()
-                for f in afiles:
-                    allfiles[f] = allfiles.get(f, 0) + 1
-
-            allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
-            allfiles = ["_".join(f.split("_")[1:]) for f in allfiles]
-            return allfiles
-        else:
-            print("No files")
-            return []
-
-if __name__ == "__main__":
-    dirs = open(".current").read().split()
-    print("Current tags:")
-    print(" ".join(dirs))
-
-    available_dirs = sorted(os.listdir(".dirs"))
-
-    files = get_files(dirs, available_dirs)
-    if len(files) == 0:
-        print_available(available_dirs)
-    else:
-        print("Files:")
+def print_files(files, args):
+    print("Files:")
+    if len(files) < 7 or args.all:
         print(" ".join(files))
+    else:
+        print(" ".join(files[:5]))
+        print("...")
+        print("\n".join(files[-1:]))
 
+def main(args):
+    if args.help:
+        print("This is a help message for 'fls'.")
+    else:
+        selected_dirs = get_current_dirs()
+        available_dirs = get_available_dirs()
+        available_files = get_files(selected_dirs, available_dirs)
 
+        if len(selected_dirs) == 0:
+            print("Filesystem root")
+        else:
+            print("Current tags:")
+            print(" ".join(selected_dirs))
+            files = get_files(selected_dirs, available_dirs)
+            if len(files) == 0:
+                print_available(available_dirs, args)
+            else:
+                files = [f.split("_")[-1] for f in files]
+                print_files(files, args)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", action='store_true')
+    parser.add_argument("-a", "--all", action='store_true')
+    parser.add_argument("additional_arg", type=str, nargs="*")
+    args = parser.parse_args()
+    main(args)
 

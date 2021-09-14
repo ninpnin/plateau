@@ -4,41 +4,56 @@ import sys
 import os
 import random
 import string
-letters = string.ascii_lowercase
+import argparse
+from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
 
-filename = ''.join(random.choice(letters) for i in range(16))
+def main(args):
+    letters = string.ascii_lowercase
 
-dirs = open(".current").read().split()
-available_dirs = sorted(os.listdir(".dirs"))
+    available_dirs = get_available_dirs()
+    selected_dirs = get_current_dirs()
+    current_files = get_files(selected_dirs, available_dirs)
+    humanreadable_current_files = [f.split("_")[-1] for f in current_files]
 
-print("Current tags:", dirs)
-
-if len(sys.argv) > 1:
-    print(sys.argv)
-    if len(dirs) == 0:
-        print("No tags available; can't create file!")
-        print("Available tags:")
-        if len(available_dirs) < 7:
-            print("\n".join(available_dirs))
+    if len(args.files) >= 1:
+        if len(selected_dirs) == 0:
+            print("No tags available; can't create file!")
+            print("Available tags:")
+            if len(available_dirs) < 7:
+                print("\n".join(available_dirs))
+            else:
+                print("\n".join(available_dirs[:5]))
+                print("...")
+                print("\n".join(available_dirs[-1:]))
         else:
-            print("\n".join(available_dirs[:5]))
-            print("...")
-            print("\n".join(available_dirs[-1:]))
+            for humanname in args.files:
+                if humanname not in humanreadable_current_files:
+                    filename = ''.join(random.choice(letters) for i in range(16))
+                    filename = filename + "_" + humanname
+                    print("Create file: " + humanname)
+
+                    for d in selected_dirs:
+                        dpath = ".dirs/" + d
+                        d_content = open(dpath).read().split()
+                        d_content = d_content + [filename]
+
+                        f = open(dpath, "w")
+                        f.write(" ".join(d_content))
+                        f.close()
+
+                    filename = ".files/" + filename
+                    f = open(filename, "w")
+                    f.close()
+                else:
+                    print(humanname + " already exists for these tags!")
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", action='store_true')
+    parser.add_argument("files", type=str, nargs="*", default=[])
+    args = parser.parse_args()
+
+    if args.help:
+        print("This is a help message for 'ftouch'")
     else:
-        humanname = sys.argv[1]
-        filename = filename + "_" + humanname
-        print("Create file:", filename)
-
-        for d in dirs:
-            dpath = ".dirs/" + d
-            d_content = open(dpath).read().split()
-            d_content = d_content + [filename]
-
-            f = open(dpath, "w")
-            f.write(" ".join(d_content))
-            f.close()
-
-        filename = ".files/" + filename
-        f = open(filename, "w")
-        f.close()
-
+        main(args)

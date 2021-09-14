@@ -2,35 +2,26 @@
 
 import sys
 import os
+import argparse
 
-def get_files(dirs, available_dirs):
-    if len(dirs) == 0:
-        print("Filesystem root")
-        return []
-    else:
-        all_found = True
-        for d in dirs:
-            if d not in available_dirs:
-                all_found = False
-        if all_found:
-            allfiles = {}
-            for ad in dirs:
-                afiles = open(".dirs/" + ad).read().split()
-                for f in afiles:
-                    allfiles[f] = allfiles.get(f, 0) + 1
+from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
 
-            allfiles = [f for f in allfiles if allfiles[f] == len(dirs)]
-            #allfiles = ["_".join(f.split("_")[1:]) for f in allfiles]
-            return allfiles
-        else:
-            print("No files")
-            return []
+def main(args):
+    if args.help:
+        print("This is a help message for 'fopen'")
+    elif len(args.files) >= 1:
+        selected_dirs = get_current_dirs()
+        available_dirs = get_available_dirs()
+        available_files = get_files(selected_dirs, available_dirs)
 
-dirs = open(".current").read().split()
-available_dirs = sorted(os.listdir(".dirs"))
-files = get_files(dirs, available_dirs)
+        if len(available_files) > 0:
+            for f in available_files:
+                if f.split("_")[-1] in args.files:
+                    os.system("open .files/" + f)
 
-if len(files) > 0:
-    for f in files:
-        os.system("open .files/" + f)
-    
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", action='store_true')
+    parser.add_argument("files", type=str, nargs="*", default=[])
+    args = parser.parse_args()
+    main(args)

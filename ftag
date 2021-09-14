@@ -2,28 +2,40 @@
 
 import sys
 import os
+import argparse
+from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
 
+def main(args):
+    if args.help:
+        print("This is a help message for 'ftag'")
+    else:
+        available_dirs = get_available_dirs()
+        selected_dirs = get_current_dirs()
+        current_files = get_files(selected_dirs, available_dirs)
+        print(current_files)
+        """
+        if len(args.tags) >= 1:
+            if tag in available_dirs:
+                current_files = open(".dirs/" + tag).read().split()
+                plain_names = [fname.split("_")[-1] for fname in current_files]
+                
+                if args.file not in plain_names:
 
-if len(sys.argv) > 2:
-    tag = sys.argv[-1]
-    taggable = sys.argv[1:-1]
-    taggable = [d.replace("/", "") for d in taggable]
-    cd = os.listdir(".")
+            taggable = list(set(taggable))
+            print("Current dirs in tag", taggable)
 
-    if tag in os.listdir(".tags"):
-        f = open(".tags/" + tag)
+            outf = open(".tags/" + tag, "w")
+            for d in taggable:
+                if d in cd:
+                    outf.write(d + "\n")
+            outf.close()
+        """
 
-        for l in f:
-            if l not in taggable:
-                taggable.append(l.strip())
-        f.close()
-
-
-    taggable = list(set(taggable))
-    print("Current dirs in tag", taggable)
-
-    outf = open(".tags/" + tag, "w")
-    for d in taggable:
-        if d in cd:
-            outf.write(d + "\n")
-    outf.close()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", action='store_true')
+    parser.add_argument("-d", "--del", action='store_true')
+    parser.add_argument("file", type=str)
+    parser.add_argument("tags", type=str, nargs="*", default=[])
+    args = parser.parse_args()
+    main(args)
