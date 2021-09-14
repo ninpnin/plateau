@@ -1,8 +1,9 @@
-#! /usr/bin/python
+#! /usr/local/bin/python3
 
 import sys
 import os
 import argparse
+import argcomplete
 
 from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
 
@@ -20,8 +21,13 @@ def main(args):
                     os.system("open .files/" + f)
 
 if __name__ == '__main__':
+    available_dirs = get_available_dirs()
+    selected_dirs = get_current_dirs()
+    available_files = get_files(selected_dirs, available_dirs)
+    available_files = [f.split("_")[-1] for f in available_files]
     parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("files", type=str, nargs="*", choices=available_files + [[]])
+    argcomplete.autocomplete(parser)
     parser.add_argument("-h", "--help", action='store_true')
-    parser.add_argument("files", type=str, nargs="*", default=[])
     args = parser.parse_args()
     main(args)
