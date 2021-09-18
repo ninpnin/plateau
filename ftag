@@ -3,33 +3,18 @@
 import sys
 import os
 import argparse
-from pyplateau.utils import get_available_dirs, get_current_dirs, get_files
+from pyplateau.utils import (
+    get_available_dirs,
+    get_current_dirs,
+    get_files,
+    tag_file
+)
 
 def main(args):
     if args.help:
         print("This is a help message for 'ftag'")
     else:
-        available_dirs = get_available_dirs()
-        selected_dirs = get_current_dirs()
-        current_files = get_files(selected_dirs, available_dirs)
-        print(current_files)
-        """
-        if len(args.tags) >= 1:
-            if tag in available_dirs:
-                current_files = open(".dirs/" + tag).read().split()
-                plain_names = [fname.split("_")[-1] for fname in current_files]
-                
-                if args.file not in plain_names:
-
-            taggable = list(set(taggable))
-            print("Current dirs in tag", taggable)
-
-            outf = open(".tags/" + tag, "w")
-            for d in taggable:
-                if d in cd:
-                    outf.write(d + "\n")
-            outf.close()
-        """
+        tag_file(args.file, args.tags)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=False)

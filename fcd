@@ -4,13 +4,13 @@ import sys
 import os
 import argparse
 import argcomplete
-from pyplateau.utils import get_available_dirs
+from pyplateau.utils import get_available_dirs, get_current_dirs
 
 def main(args):
     if args.help:
         print("This is a help message for 'fcd'.")
     else:
-        dirs = open(".current").read().split()
+        dirs = get_current_dirs()
 
         if len(args.tags) >= 1:
             f = open(".current", "w")

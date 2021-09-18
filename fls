@@ -29,7 +29,7 @@ def main(args):
     else:
         selected_dirs = get_current_dirs()
         available_dirs = get_available_dirs()
-        available_files = get_files(selected_dirs, available_dirs)
+        available_files = get_files(selected_dirs)
 
         if len(selected_dirs) == 0:
             print("Filesystem root\n")
@@ -37,7 +37,7 @@ def main(args):
         else:
             print("Current tags:")
             print(" ".join(selected_dirs))
-            files = get_files(selected_dirs, available_dirs)
+            files = get_files(selected_dirs)
             if len(files) == 0:
                 print_available(available_dirs, args)
             else:
